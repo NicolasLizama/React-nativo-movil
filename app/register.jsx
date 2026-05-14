@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Alert,
   Pressable,
@@ -7,10 +7,10 @@ import {
   Text,
   TextInput,
   View,
-} from "react-native"
+} from "react-native";
 
-import DateTimePicker from "@react-native-community/datetimepicker"
-import { router } from "expo-router"
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { router } from "expo-router";
 import { supabase } from "../lib/supabase.js"; // Ruta relativa directa
 
 // --- UTILIDADES (Recuperadas) ---
@@ -49,7 +49,7 @@ export default function Register() {
   const [nombre, setNombre] = useState("")
   const [apellido, setApellido] = useState("")
   const [fechaNacimiento, setFechaNacimiento] = useState("")
-  const [telefono, setTelefono] = useState("")
+  const [telefono, setTelefono] = useState("+56")
   const [prevision, setPrevision] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -175,12 +175,26 @@ export default function Register() {
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Teléfono</Text>
+
           <TextInput
-            placeholder="912345678"
+            placeholder="+56912345678"
             value={telefono}
-            onChangeText={setTelefono}
+            onChangeText={(text) => {
+              // Mantener siempre +56
+              let limpio = text.replace(/[^0-9+]/g, "")
+
+              if (!limpio.startsWith("+56")) {
+                limpio = "+56"
+              }
+
+              // Máximo: +56 + 9 dígitos = 12 caracteres
+              if (limpio.length > 12) {
+                limpio = limpio.slice(0, 12)
+              }
+
+              setTelefono(limpio)
+            }}
             keyboardType="phone-pad"
-            maxLength={9}
             style={styles.input}
           />
         </View>
